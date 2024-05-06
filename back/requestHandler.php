@@ -17,7 +17,9 @@ $routes = [
     'login' => './controller/loginController.php',
     'user' => './controller/userController.php',
     'app' => './controller/application.php',
-    'classe' => './controller/classeController.php'
+    'classe' => './controller/classeController.php',
+    'pattern' => './controller/patternController.php',
+    'tags' => './controller/tagsController.php'
 ];
 
 if (isset($_POST['id'])) $id = $_POST['id']; else $id = 0;

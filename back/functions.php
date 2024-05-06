@@ -1,6 +1,6 @@
 <?php 
 function CallDatabase(){
-    return new PDO('mysql:host=mysql-localhost;dbname=mypatron','root','');
+    return new PDO('mysql:host=localhost;dbname=mypatron','root','');
 }
 
 function sanitizeData($data):int{
