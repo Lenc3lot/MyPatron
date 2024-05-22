@@ -30,7 +30,17 @@ if(!$included){
             break;
 
         case 'addNewPattern':
-            $rqt = 'INSERT INTO p';
+            $idUser = $_POST['idUser'];
+            $pattern = json_decode($_POST['pattern'],true);
+            $rqt = "INSERT INTO patron(idPatron,pLibel,pDesc,pCheminPhoto,pLien,idMarque,idTypePatron,idUtilisateur) VALUES(NULL";
+            foreach ($pattern as $key => $value) {
+                if($key != 'patternTag'){
+                    $rqt.= ','.$value;
+                }
+            }
+            $rqt .= ','.$idUser.');';
+            echo (json_encode($rqt));
+            // $rqt = "INSERT INTO patron VALUES(NULL,".$pattern['patterName'].",".$pattern['patternDesc'].")";
         
         default:
             break;
