@@ -1,15 +1,15 @@
 export default {
-    baseUrl: 'http://localhost/MyPatron/back/requestHandler.php',
+    baseUrl: 'http://noto.alwaysdata.net/back/requestHandler.php',
     data: {
         newPatternTitle: ''
     },
     newPattern: {
-        patternPicture: '',
         patterName: '',
+        patternDesc: '',
+        patternPicture: '',
         patternLink: '',
         patternBrand: 'Marque du patron',
         patternType: 'Type du patron',
-        patternTag: [],
-        patternDesc: ''
+        patternTag: []
     }
 }

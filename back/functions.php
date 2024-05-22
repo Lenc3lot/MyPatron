@@ -1,6 +1,6 @@
 <?php 
 function CallDatabase(){
-    return new PDO('mysql:host=localhost;dbname=mypatron','root','');
+    return new PDO('mysql:host=mysql-noto.alwaysdata.net;dbname=noto_mypatron','noto_bat','R0X_MyP@tr0n83!');
 }
 
 function sanitizeData($data):int{

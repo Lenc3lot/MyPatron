@@ -5,7 +5,8 @@
             <!-- PHOTO -->
             <nav>
                 <label>Photo du patron :</label>
-                    <input id="importFile" type="file" style="border: dashed 1px;" placeholder="Ajouter une Photo" @input="console.log($event.file)">
+                <formSubmit @click="test()"/>
+                    <!-- <input id="importFile" type="file" style="border: dashed 1px;" placeholder="Ajouter une Photo" @input="console.log($event.file)"> -->
             </nav>
             <!-- TITRE -->
             <nav>
@@ -89,6 +90,7 @@ TO DO :
 import store from '@/store'
 import newTag from '@/components/newTag.vue'
 import router from '@/router'
+import formSubmit from '@/components/formSubmit'
 export default {
     name: 'AddPattern',
     head() {
@@ -105,7 +107,8 @@ export default {
     },
     components: {
         // components here
-        newTag
+        newTag,
+        formSubmit
     },
     props: {
         // props here
@@ -210,17 +213,46 @@ export default {
                 cancelButtonText: 'Annuler'
             }).then((result)=>{
                 if(result.isConfirmed){
+                    let data = new FormData()
+                    data.append('req','pattern')
+                    data.append('action','addNewPattern')
+                    data.append('pattern',JSON.stringify(this.dataStore.newPattern))
+                    data.append('idUser','0')
+                    fetch(this.dataStore.baseUrl,{
+                        body:data,
+                        method:'POST'
+                    })
+                        .then(response => response.json())
+                        .then(response =>{
+                            console.log(response)
+                        })
+                        .catch(error=>{
+                            console.error(error)
+                        })
                     this.$swal('Patron créé !','','success')
                     router.push('/')
+                    console.log(this.newPattern)
                 }
             })
+        },
+        test(){
+            
         }
     },
     mounted() {
-        // mounted here
-        this.getPatternBrand();
-        this.getPatternType();
-        this.getAllTags();
+            // mounted here
+            this.getPatternBrand();
+            this.getPatternType();
+            this.getAllTags();
+            this.dataStore.newPattern =  {
+                patterName: '',
+                patternDesc: '',
+                patternPicture: '',
+                patternLink: '',
+                patternBrand: 'Marque du patron',
+                patternType: 'Type du patron',
+                patternTag: []
+            }
     },
     created() {
         // created here
