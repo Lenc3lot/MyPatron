@@ -5,7 +5,7 @@
             <!-- PHOTO -->
             <nav>
                 <label>Photo du patron :</label>
-                <formSubmit @click="test()"/>
+                <formSubmit/>
                     <!-- <input id="importFile" type="file" style="border: dashed 1px;" placeholder="Ajouter une Photo" @input="console.log($event.file)"> -->
             </nav>
             <!-- TITRE -->
@@ -65,6 +65,10 @@
                 </label><textarea id="patternNotes" type="text" placeholder="Notes sur le patron..." v-model="newPattern.patternDesc"></textarea>
             </nav>
             <nav>
+                <label><h3>PDF :</h3></label>
+                <pdfFormSubmit/>
+            </nav>
+            <nav>
                 <input type="submit" value="Créer un nouveau patron" @click="createNew()">
             </nav>
         </div>
@@ -72,25 +76,12 @@
 </template>
 
 <script>
-/*
-OK, en fait il faut reprendre le problème pour tout ce qui est MARQUE, TYPE et TAGS, on veux pas récupérer une value mais l'ID qui est lié, donc
-il faut mettre en place des events @select sur les input de type select.
-
-Aussi peut être pas mal de reprendre les newTags, voire de tout passer concernant les tags dans le store et de créer un objet newPattern dedans.
-
-TO DO : 
-    - Créer nvl objt newPattern dans le store.
-    - Récup ID des select.
-    - Ajouter les tags par customEvent ou push dans store.
-    - Pouvoir suppr des nvx tags ajoutés.
-    - Pouvoir upload ( donc stocker dans un doss + chemin relat ) UNE image.
-    - Ajout de fichier PDF (simple dans un 1er temps) et de stocker le chemin relat
-*/
 
 import store from '@/store'
 import newTag from '@/components/newTag.vue'
 import router from '@/router'
 import formSubmit from '@/components/formSubmit'
+import pdfFormSubmit from '@/components/pdfFormSubmit.vue'
 export default {
     name: 'AddPattern',
     head() {
@@ -108,7 +99,8 @@ export default {
     components: {
         // components here
         newTag,
-        formSubmit
+        formSubmit,
+        pdfFormSubmit
     },
     props: {
         // props here
@@ -235,24 +227,12 @@ export default {
                 }
             })
         },
-        test(){
-            
-        }
     },
     mounted() {
             // mounted here
             this.getPatternBrand();
             this.getPatternType();
             this.getAllTags();
-            this.dataStore.newPattern =  {
-                patterName: '',
-                patternDesc: '',
-                patternPicture: '',
-                patternLink: '',
-                patternBrand: 'Marque du patron',
-                patternType: 'Type du patron',
-                patternTag: []
-            }
     },
     created() {
         // created here
@@ -290,6 +270,10 @@ select,
 textarea {
     width: 100%;
     padding: 10px;
+}
+
+#newPatternDiv>:nth-last-child(3){
+    flex: 1 1 100%;
 }
 
 #newPatternDiv>:nth-last-child(2){
