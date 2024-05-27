@@ -60,8 +60,18 @@ if(!$included){
                 copy($tempDir.$pattern['patternPicture'],$defDir);
                 unlink('./uploads/temp/'.$pattern['patternPicture']);
             }
+
+            // AJOUT PATRON DANS lA TABLE patron
+            $stmt = $liaison->prepare('INSERT INTO patron VALUES (NULL,?,?,?,?,?,?,?)');
+            $name = $pattern['patterName'];
+            $desc = $pattern['patternDesc'];
+            $brand = $pattern['patternBrand'];
+            $type = $pattern['patternType'];
+            $link = $pattern['patternLink'];
+            // echo ($name." ".$desc." ".$defDir." ".$brand." ".$idUser." ".$type." ".$link);
+            $stmt->execute([$name,$desc,$defDir,$brand,$idUser,$type,$link]);
             // $rqt = "INSERT INTO patron VALUES(NULL,".$pattern['patterName'].",".$pattern['patternDesc'].")";
-        
+            
         default:
             break;
     }
