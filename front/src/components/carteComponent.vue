@@ -16,6 +16,9 @@
             <h3>Tags : </h3>
             <p v-for="tag in tags" :key="tag">{{ tag }}</p>
           </nav>
+          <!-- <embed 
+          src="https://noto.alwaysdata.net/back/uploads/users/user0/TagadaJones.pdf"
+          width="192O"> -->
         </section>
         <button>Editer</button>
     </div>
@@ -60,7 +63,7 @@ export default {
   methods: {
     // methods here
     change(){
-      window.location.replace (this.lien)
+      // window.location.replace (this.lien)
     }
   },
   mounted () {

@@ -7,7 +7,6 @@
     <div id="viewContainer">
       <carteComponent v-for="n in 20" :key="n"/>
     </div>
-    
   </main>
 </template>
 

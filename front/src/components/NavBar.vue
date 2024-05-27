@@ -7,17 +7,20 @@
           <router-link class="nav-link" to="/">Accueil</router-link>
         </li>
         <li class="nav-item">
-          <router-link class="nav-link" to="/" @click="confirmAjt()"> + Ajouter un patron</router-link>
+          <router-link class="nav-link" to="/" @click="confirmAjt()" v-if="isLogged"> + Ajouter un patron</router-link>
         </li>
         <li class="nav-item">
-          <router-link class="nav-link" to="/">Mon espace</router-link>
+          <router-link class="nav-link" to="/myspace" v-if="isLogged">Mon espace</router-link>
+          <router-link class="nav-link" to="/login" v-else>Se connecter</router-link>
         </li>
+        <button class="nav-item" @click="doLogOut()" v-if="isLogged">Déconnexion</button>
       </ul>
     </div>
   </nav>
 </template>
 
 <script>
+// import router from '@/router';
 import store from '@/store'
 export default {
   name: 'NavBar',
@@ -45,7 +48,8 @@ export default {
   data() {
     return {
       // variables here
-      dataStore: store
+      dataStore: store,
+      isLogged: false
     }
   },
   methods: {
@@ -60,13 +64,22 @@ export default {
         this.dataStore.newPattern.patterName = email
         this.$router.push('/addPatern/2')
       }
+    },
+    doLogOut(){
+      localStorage.clear()
+      this.$emit('logOut')
+      window.location.replace('/#/login')
     }
   },
   mounted() {
     // mounted here
+    if(localStorage.getItem('isLogged')){
+      this.isLogged = true
+    }
   },
   created() {
     // created here
+    
   }
 }
 </script>
@@ -91,5 +104,10 @@ li {
 
 .navbar-nav>:nth-child(3) {
   margin-inline-end: 0px;
+}
+
+button{
+  margin-left: 2%;
+  border-radius: 10px;
 }
 </style>

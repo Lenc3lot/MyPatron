@@ -1,5 +1,5 @@
 <template>
-  <NavBar/>
+  <NavBar @logOut="update()" :key="componentsKey"/>
   <router-view/>
 </template>
 
@@ -14,9 +14,16 @@
     return {
       // variables here
       // dataStore: store
-      visible : 'false'
+      visible : 'false',
+      componentsKey : 0
     }
   },
+  methods: {
+    update(){
+      this.componentsKey += 1;
+      this.$router.push('/login')
+    }
+  }
   }
 </script>
 
