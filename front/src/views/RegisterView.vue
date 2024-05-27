@@ -17,7 +17,7 @@
 </template>
 
 <script>
-// import store from '@/store'
+import store from '@/store'
 export default {
     name: 'registerView',
     head() {
@@ -44,7 +44,7 @@ export default {
     data() {
         return {
             // variables here
-            // dataStore: store
+            dataStore: store,
             newUser: {
                 mail:'',
                 nom:'',
@@ -59,7 +59,34 @@ export default {
     methods: {
         // methods here
         testAjtUser(){
-            console.log('plop')
+            let datas = new FormData()
+            datas.append('mail',this.newUser.mail)
+            datas.append('nom',this.newUser.nom)
+            datas.append('pnom',this.newUser.prenom)
+            datas.append('login',this.newUser.login)
+            datas.append('req','register')
+            datas.append('action','doRegister')
+            if(this.sameMdp){
+                datas.append('mdp',this.newUser.mdp)
+            }
+            fetch(this.dataStore.baseUrl,{
+                body:datas,
+                method: 'POST'
+            })
+                .then(response=>response.json())
+                .then(response=>{
+                    console.log(response)
+                    if(response.statut == '400'){
+                        this.$swal({
+                            title: 'Oh oh...',
+                            text: ' Compte déjà existant !',
+                            icon: 'error'
+                        })
+                    }
+                })
+                .catch(error=>{
+                    console.error(error)
+                })
         },
         testEqMdp(mdp){
             if(mdp == this.validMDP){

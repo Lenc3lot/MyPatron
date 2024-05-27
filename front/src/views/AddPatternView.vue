@@ -209,7 +209,7 @@ export default {
                     data.append('req','pattern')
                     data.append('action','addNewPattern')
                     data.append('pattern',JSON.stringify(this.dataStore.newPattern))
-                    data.append('idUser','0')
+                    data.append('idUser',localStorage.getItem('idUser'))
                     fetch(this.dataStore.baseUrl,{
                         body:data,
                         method:'POST'

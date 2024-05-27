@@ -6,7 +6,7 @@ if(!$included){
     $data = array();
     switch ($action) {
         case 'doLogin':
-            $login = $_POST['login'];
+            $login =  strtolower($_POST['login']);
             $mdp = hash('sha256',$_POST['pwd']);
             $stmt = $liaison->prepare('SELECT idUtilisateur, uNom, uPNom FROM utilisateur WHERE uLogin=? AND uMdp =?');
             $stmt->execute([$login,$mdp]);
