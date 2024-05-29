@@ -1,31 +1,31 @@
 <template>
     <div id="myCard">
-        <img src="@/assets/img.png" width="150" height="150">
-        <section id="titre">
-          <h1>{{titre}}</h1>  
-          <a @click="change()">Lien vers le patron</a>
-        </section>
+        <img :src="img" width="150" height="150">
+          <h1>{{patron.pLibel}}</h1>  
+          <a @click="change()">{{patron.pLien}}</a>
         <section id="cookie">
           <h3>Marque :</h3>
-          <p>{{ marque }}</p>
+          <p>{{ patron.libelMarque }}</p>
           <h3>Type :</h3>
-          <p>{{ type }}</p>
+          <p>{{ patron.tpLibel }}</p>
           <h3>Notes : </h3>
-          <textarea name="Notes" id="Notes" style="resize: none;" readonly></textarea>
+          <textarea name="Notes" id="notes" style="resize: none;" readonly v-model="desc"></textarea>
           <nav>
             <h3>Tags : </h3>
-            <p v-for="tag in tags" :key="tag">{{ tag }}</p>
+            <p v-for="tag in tags" :key="tag.idTag">{{ tag.tLibel }}</p>
           </nav>
           <!-- <embed 
           src="https://noto.alwaysdata.net/back/uploads/users/user0/TagadaJones.pdf"
           width="192O"> -->
         </section>
-        <button>Editer</button>
+        <button @click="pdfAcces()">PDF</button>
+        <button @click="test()">Editer</button>
+        <button @click="deletePattern()">Supprimer</button>
     </div>
 </template>
 
 <script>
-// import store from '@/store'
+import store from '@/store'
 export default {
   name: 'carteComponent',
   head () {
@@ -45,6 +45,7 @@ export default {
   },
   props: {
     // props here
+    patron:Object
   },
   watch: {
     // variables to watch here  
@@ -52,18 +53,39 @@ export default {
   data () {
     return {
       // variables here
-      // dataStore: store
-      titre :'Titre du patron',
-      lien : 'http://google.com',
-      marque : 'Exemple marque',
-      type: ' Exemple type ',
-      tags: ['tag1','tag2','tag3','tag4']
+      dataStore: store,
+      desc: this.patron.pDesc,
+      tags: this.patron.tags,
+      img : 'http://noto.alwaysdata.net/back/'+this.patron.pCheminPhoto
     }
   },
   methods: {
     // methods here
-    change(){
-      // window.location.replace (this.lien)
+    test(){
+      this.$emit('editEvent',this.patron.idPatron)
+    },
+    pdfAcces(){
+      this.$emit('accesPDF',this.patron.infoPdf)
+    },
+    deletePattern(){
+      let monFormData = new FormData()
+      monFormData.append('idPatron',this.patron.idPatron)
+      monFormData.append('pdfInfos',JSON.stringify(this.patron.infoPdf))
+      monFormData.append('pCheminPhoto',this.patron.pCheminPhoto)
+      monFormData.append('req','pattern')
+      monFormData.append('action','deletePattern')
+      console.log(monFormData)
+      fetch(this.dataStore.baseUrl,{
+        body: monFormData,
+        method:'POST'
+      })
+        .then(response=>response.json())
+        .then(response=>{
+          console.log(response)
+        })
+        .catch(error=>{
+          console.error(error)
+        })
     }
   },
   mounted () {
@@ -82,7 +104,8 @@ export default {
   border: solid 0px;
   border-radius: 10px;
   flex: 1 1 25%;
-  flex-wrap: wrap;
+  /* flex-wrap: wrap; */
+  flex-direction: column;
   padding: 1%;
   margin: 2%;
   max-width: 27%;
@@ -90,22 +113,18 @@ export default {
   min-width: 10%;
   /* min-height: 20%; */
   background-color: wheat;
+  font-size: 100%;
 }
 
-img{
-  flex: 0 1 48%;
+ img{
+  /* flex: 0 1 48%; */
   min-width: 10px;
   min-height: 10px;
+  align-self: center;
 } 
 
-#titre{
-  text-align: center;
-  flex: 1 1 48%;
-  display: flex;
-  flex-direction: column;
-  min-width: 10%;
-  max-width: 48%;
-  flex-wrap: wrap;
+h1,a{
+  align-self: center;
 }
 
 button{
@@ -115,7 +134,7 @@ button{
   box-shadow: none;
 }
 
-nav{
+/* nav{
   display: flex;
   flex-wrap: wrap;
   justify-content: space-evenly;
@@ -132,13 +151,14 @@ nav>p{
   display: flex;
   flex-direction: column;
   min-width: 10%;
-}
+} */
 
 #notes{
-  max-width: 70%;
+  width: 100%;
+  max-width: 100%;
   max-height: 100%;
   min-height: 10%;
   min-width: 10%;
-
 }
+
 </style>

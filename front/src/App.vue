@@ -37,6 +37,7 @@
 	flex-direction: row;
 	height: 100%;
   background-color: rgba(211, 211, 211, 0.688);
+  font-size: 100%;
 }
 
 * {

@@ -9,7 +9,7 @@
           <input type="submit" class="button-29" value="Se connecter" @click="doLogin()">
         </nav>
       </div>
-      <button @click="test()">Clic</button>
+      <!-- <button @click="test()">Clic</button> -->
     </main>
   </template>
 

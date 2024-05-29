@@ -1,5 +1,5 @@
 <template>
-    <input type="file" @change="onChange($event)" multiple>
+    <input type="file" accept=".pdf" @change="onChange($event)" multiple>
 </template>
 
 <script>

@@ -22,6 +22,7 @@ $routes = [
     'pattern' => './controller/patternController.php',
     'tags' => './controller/tagsController.php',
     'img' => './controller/imgController.php',
+    'pdf' => './controller/pdfController.php'
 ];
 
 if (isset($_POST['id'])) $id = $_POST['id']; else $id = 0;

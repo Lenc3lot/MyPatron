@@ -5,13 +5,19 @@
         <custonBar/>
       </div>
     <div id="viewContainer">
-      <carteComponent v-for="n in 20" :key="n"/>
+      <carteComponent v-for="patron in listePatrons" :key="patron.idPatron" :patron="patron" @accesPDF="accesPDF($event)" @editEvent="test($event)"/>
+    </div>
+    <div id="editMode" v-if="visible">
+      <h1>Page édition</h1>
+    </div>
+    <div id="pdfPage" v-if="pdfVisible">
+      <h1>Page PDF</h1>
     </div>
   </main>
 </template>
 
 <script>  
-// import store from '@/store'
+import store from '@/store'
 import custonBar from '@/components/SideBar.vue'
 import carteComponent from '@/components/carteComponent.vue'
 export default {
@@ -42,31 +48,45 @@ export default {
   data () {
     return {
       // variables here
-      // dataStore: store
-      visible : false
+      dataStore: store,
+      visible: false,
+      pdfVisible: false,
+      listePatrons: []
     }
   },
   methods: {
     // methods here
-    test(){
+    getAllPaterns(){
       let myFormData = new FormData();
-      myFormData.append('req','user')
-      myFormData.append('action','doTest')
-      fetch('http://localhost/MyPatron/back/requestHandler.php',{
+      myFormData.append('req','pattern')
+      myFormData.append('action','getAllPatern')
+      myFormData.append('idUser',localStorage.getItem('idUser'))
+      fetch(this.dataStore.baseUrl,{
         body: myFormData,
         method: 'POST'
       })
         .then(response=>response.json())
         .then(response => {
-          console.log((response))
+          console.log(response)
+          this.listePatrons = response
+          console.log(this.listePatrons)
         })
         .catch(error=>{
           console.log(error)
         })
+    },
+    test(e){
+      console.log(e)
+      this.visible = true
+    },
+    accesPDF(e){
+      console.log(e)
+      this.pdfVisible = true
     }
   },
   mounted () {
     // mounted here
+    this.getAllPaterns()
   },
   created () {
     // created here
@@ -102,4 +122,17 @@ main{
   flex-wrap: wrap;
 }
 
+#editMode{
+  position: absolute;
+  background-color: white;
+  width: 100%;
+  height: 200%;
+}
+
+#pdfPage{
+  position: absolute;
+  background-color: white;
+  width: 100%;
+  height: 200%;
+}
 </style>

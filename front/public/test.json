@@ -1,0 +1,53 @@
+{
+    "8": {
+        "pLibel": "paton",
+        "pDesc": "ddddd",
+        "pCheminPhoto": ".\/uploads\/users\/user4\/makeitmeme_HDLre.jpeg",
+        "idMarque": 8,
+        "libelMarque": "Popeline & Linon",
+        "idTypePatron": 2,
+        "tpLibel": "Robe",
+        "pLien": "ddd",
+        "infoPdf": [
+            {
+                "idPDF": 1,
+                "relativePath": ".\/uploads\/users\/user4\/CV NOTO BAPTISTE.pdf"
+            },
+            {
+                "idPDF": 2,
+                "relativePath": ".\/uploads\/users\/user4\/CvNoto (3).pdf"
+            }
+        ],
+        "tags": []
+    },
+    "10": {
+        "pLibel": "RePatronFinal",
+        "pDesc": "Notes final avec ajout pdf",
+        "pCheminPhoto": ".\/uploads\/users\/user4\/hellfest-2024.jpg",
+        "idMarque": 5,
+        "libelMarque": "You made my day Patterns",
+        "idTypePatron": 4,
+        "tpLibel": "Pantalon",
+        "pLien": "Lien",
+        "infoPdf": [
+            {
+                "idPDF": 3,
+                "relativePath": ".\/uploads\/users\/user4\/billet sprt 1.pdf"
+            },
+            {
+                "idPDF": 4,
+                "relativePath": ".\/uploads\/users\/user4\/billetsprt2.pdf"
+            }
+        ],
+        "tags": [
+            {
+                "idTag": 3,
+                "tLibel": "De soir\u00e9e"
+            },
+            {
+                "idTag": 7,
+                "tLibel": "Automne"
+            }
+        ]
+    }
+}

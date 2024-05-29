@@ -10,6 +10,7 @@ export default {
         patternLink: '',
         patternBrand: 'Marque du patron',
         patternType: 'Type du patron',
-        patternTag: []
+        patternTag: [],
+        patternPDF: []
     }
 }
