@@ -19,7 +19,7 @@
           width="192O"> -->
         </section>
         <button @click="pdfAcces()">PDF</button>
-        <button @click="test()">Editer</button>
+        <button @click="editPattern()">Editer</button>
         <button @click="deletePattern()">Supprimer</button>
     </div>
 </template>
@@ -61,8 +61,9 @@ export default {
   },
   methods: {
     // methods here
-    test(){
-      this.$emit('editEvent',this.patron.idPatron)
+    editPattern(){
+      this.dataStore.patternInEdit = this.patron
+      this.$router.push('/editPattern/'+this.patron.idPatron)
     },
     pdfAcces(){
       this.$emit('accesPDF',this.patron.infoPdf)

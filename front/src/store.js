@@ -12,5 +12,6 @@ export default {
         patternType: 'Type du patron',
         patternTag: [],
         patternPDF: []
-    }
+    },
+    patternInEdit :[]
 }

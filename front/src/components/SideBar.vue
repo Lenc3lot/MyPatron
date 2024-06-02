@@ -3,27 +3,33 @@
 		<ul class="main-nav">
       <nav>
 			<li>Trier par :</li>
-        <select>
+        <select @change="selectedTag = $event.target.value">
           <option selected disabled>Sélectionner...</option>
-          <option>Option 1</option>
-          <option>Option 2</option>
+          <option v-for="tag in allTags" :key="tag.idTag" :value="tag.idTag">{{ tag.tLibel }}</option>
         </select>
       </nav>
       <nav>
         <li>Type :</li>
-        <select>
+        <select @change="selectedType = $event.target.value">
           <option selected disabled>Sélectionner...</option>
-          <option>Option 1</option>
-          <option>Option 2</option>
+          <option v-for="types in allTypes" :key="types.idTypePatron" :value="types.idTypePatron">{{ types.tpLibel }}</option>
         </select>
       </nav>
+      <nav>
+			<li>Marque :</li>
+        <select @change="selectedBrand = $event.target.value">
+          <option selected disabled>Sélectionner...</option>
+          <option v-for="brand in allBrands" :key="brand.idMarque" :value="brand.idMarque">{{ brand.libelMarque }}</option>
+        </select>
+      </nav>
+      <p v-if="displayReset" @click="resetSearch()">Annuler le tri</p>
 		</ul>
-    <button>GO</button>
+    <button @click="selectSpePattern()">GO</button>
 	</header>
 </template>
 
 <script>
-// import store from '@/store'
+import store from '@/store'
 export default {
   name: 'SideBar',
   head () {
@@ -50,14 +56,99 @@ export default {
   data () {
     return {
       // variables here
-      // dataStore: store
+      dataStore: store,
+      allTags: [],
+      allTypes: [],
+      allBrands: [],
+      selectedTag: '',
+      selectedType: '',
+      selectedBrand: '',
+      displayReset: false
     }
   },
   methods: {
     // methods here
+    getTags(){
+      let monFormData = new FormData()
+      monFormData.append('req','tags')
+      monFormData.append('action','getAllTags')
+      fetch(this.dataStore.baseUrl, {
+        body: monFormData,
+        method: 'POST'
+      })
+        .then(response => response.json())
+        .then(response => {
+          // console.log(response)
+          this.allTags = response
+        })
+        .catch(error=> {
+          console.error(error)
+        })
+    },
+    getType(){
+      let monFormData = new FormData()
+      monFormData.append('req','pattern')
+      monFormData.append('action','getPatternType')
+      fetch(this.dataStore.baseUrl, {
+        body: monFormData,
+        method: 'POST'
+      })
+        .then(response => response.json())
+        .then(response => {
+          // console.log(response)
+          this.allTypes = response
+        })
+        .catch(error=> {
+          console.error(error)
+        })
+    },
+    selectSpePattern(){
+      let monFormData = new FormData()
+      monFormData.append('req','pattern')
+      monFormData.append('action','selectSpeType')
+      monFormData.append('idTypePatron',this.selectedType)
+      monFormData.append('idTag',this.selectedTag)
+      monFormData.append('idMarque',this.selectedBrand)
+      monFormData.append('idUser',localStorage.getItem('idUser'))
+      console.log(monFormData)
+      fetch(this.dataStore.baseUrl,{
+        body: monFormData,
+        method: 'POST'
+      })
+      .then(response => response.json())
+      .then(response =>{
+        // console.log(response)
+        this.selectedSpePattern = response
+        this.$emit('setSpePatt',this.selectedSpePattern)
+        this.displayReset = true
+      })
+      .catch(error=>{
+        console.error(error)
+      })
+    },
+    resetSearch(){
+      this.displayReset = false
+      this.$emit('resetSearch')
+    },
+    getPatternBrands(){
+      let monFormData = new FormData()
+      monFormData.append('req','pattern')
+      monFormData.append('action','getPatternBrand')
+      fetch(this.dataStore.baseUrl,{
+        body: monFormData,
+        method: 'POST'
+      })
+        .then(response=>response.json())
+        .then(response=>{
+          this.allBrands = response
+        })
+    }
   },
   mounted () {
     // mounted here
+    this.getTags()
+    this.getType()
+    this.getPatternBrands()
   },
   created () {
     // created here
@@ -138,5 +229,9 @@ button{
   border-radius: 50px 50px;
   margin-top: 10%;
   width: 10%;
+}
+
+p:hover{
+  cursor: pointer;
 }
 </style>
