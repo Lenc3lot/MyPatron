@@ -179,6 +179,85 @@ if(!$included){
             unlink($img);
             break;
 
+        case 'selectSpeType':
+            //Premièrement on récupère TOUT les IDs des patrons de l'user
+            $idUser = $_POST['idUser'];
+            $idTypePatron = $_POST['idTypePatron'];
+            $idTag = $_POST['idTag'];
+            $idMarque = $_POST['idMarque'];
+            
+            $params = [$idUser];
+
+            $rqt = 'SELECT Pa.idPatron 
+            FROM patron Pa
+            INNER JOIN posséder P
+            ON P.idPatron = Pa.idPatron
+            WHERE idUtilisateur = ?';
+
+            if($idTypePatron != ''){
+                $rqt.= ' AND idTypePatron = ?';
+                $params[] = $idTypePatron;
+            }
+            
+            if ($idTag != ''){
+                $rqt.= ' AND idTag = ?';
+                $params[] = $idTag;
+            }   
+
+            if ($idMarque != ''){
+                $rqt .= ' AND idMarque = ?';
+                $params[] = $idMarque;
+            }
+            $stmt = $liaison->prepare($rqt);
+            
+            // echo $rqt;
+            
+            $stmt->execute($params);
+            $rows = $stmt->fetchAll();
+            $listeId = [];
+            foreach ($rows as $row) {
+                $listeId[]=$row['idPatron'];
+            }
+
+            //On va ensuite récup toutes les données propres à chaque patron et les mettres dans un tableau
+            $allPattern = [];
+            foreach ($listeId as $idPatron) {
+                // Récup les infos générales
+                $stmt = $liaison->prepare('SELECT pLibel,pDesc,pCheminPhoto,P.idMarque,libelMarque,P.idTypePatron,tpLibel,pLien
+                FROM patron P
+                INNER JOIN marque M
+                ON M.idMarque = P.idMarque
+                INNER JOIN typepatron TP
+                ON TP.idTypePatron = P.idTypePatron
+                WHERE idPatron = ?;');
+                $stmt->execute([$idPatron]);
+                $rows = $stmt->fetch(PDO::FETCH_ASSOC);
+                $data[$idPatron] = $rows;
+                $data[$idPatron]['idPatron'] = $idPatron;
+                
+                //Récup les infos PDF
+                $stmt = $liaison->prepare('SELECT idPDF,relativePath
+                FROM pdf
+                WHERE idPatron = ?;');
+                $stmt->execute([$idPatron]);
+                $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
+                $data[$idPatron]['infoPdf'] = $rows;
+
+                //Récup les infos des tags
+                $stmt = $liaison->prepare('SELECT T.idTag,tLibel
+                FROM tag T
+                INNER JOIN posséder P
+                ON P.idTag = T.idTag
+                WHERE P.idPatron = ?;');
+                $stmt->execute([$idPatron]);
+                $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
+                $data[$idPatron]['tags'] = $rows;
+
+                // echo json_encode($unPatron);
+                // $data[] = $unPatron;
+            }
+            break;
+        
         default:
             break;
     }
