@@ -1,6 +1,6 @@
 <?php
 if(!$included){
-    echo 'ntm';
+    echo 'ACCES REFUSE';
 } else {
     $action = $_POST['action'];
     $data = array();
@@ -15,5 +15,13 @@ if(!$included){
             }
             $data['statut'] = '200';
             echo json_encode($data);
+            break;
+        
+        case'deletePDF':
+            $idPDF = $_POST['idPDF'];
+            $stmt = $liaison->prepare("DELETE FROM pdf WHERE idPDF = ?");
+            $stmt->execute([$idPDF]);
+            $data['statut'] = '200';
+            break;
     }
 }

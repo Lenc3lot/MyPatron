@@ -1,7 +1,7 @@
 <?php
 
 if(!$included){
-    echo 'ntm';
+    echo 'ACCES REFUSE';
 } else {
     $action = $_POST['action'];
     $data = array();

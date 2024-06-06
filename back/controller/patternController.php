@@ -1,6 +1,6 @@
 <?php
-if(!$included){
-    echo 'ntm';
+if (!$included) {
+    echo 'ACCES REFUSE';
 } else {
     $action = $_POST['action'];
     $data = array();
@@ -12,20 +12,20 @@ if(!$included){
             $rows = $stmt->fetchAll();
             foreach ($rows as $row) {
                 $returntab = [];
-                $returntab['idMarque']= $row['idMarque'];
-                $returntab['libelMarque']= $row['libelMarque'];
+                $returntab['idMarque'] = $row['idMarque'];
+                $returntab['libelMarque'] = $row['libelMarque'];
                 $data[] = $returntab;
             }
             break;
-        
+
         case 'getPatternType':
             $rqt = 'SELECT * FROM typepatron';
             $stmt = $liaison->query($rqt);
             $rows = $stmt->fetchAll();
             foreach ($rows as $row) {
                 $returntab = [];
-                $returntab['idTypePatron']= $row['idTypePatron'];
-                $returntab['tpLibel']= $row['tpLibel'];
+                $returntab['idTypePatron'] = $row['idTypePatron'];
+                $returntab['tpLibel'] = $row['tpLibel'];
                 $data[] = $returntab;
             }
             break;
@@ -33,33 +33,33 @@ if(!$included){
         case 'addNewPattern':
             // AJOUT DU PATTERN EN BASE
             $idUser = $_POST['idUser'];
-            $pattern = json_decode($_POST['pattern'],true);
+            $pattern = json_decode($_POST['pattern'], true);
 
             //REQUETE
             $rqt = "INSERT INTO patron(idPatron,pLibel,pDesc,pCheminPhoto,pLien,idMarque,idTypePatron,idUtilisateur) VALUES(NULL";
             foreach ($pattern as $key => $value) {
-                if($key != 'patternTag'){
-                    $rqt.= ','.$value;
+                if ($key != 'patternTag') {
+                    $rqt .= ',' . $value;
                 }
             }
-            $rqt .= ','.$idUser.');';
+            $rqt .= ',' . $idUser . ');';
 
             //DEPLACEMENT DE L'IMAGE// 
-            
+
             //REP TEMPORAIRE
             $tempDir = "./uploads/temp/";
 
             //CHECK SI DOSSIER LIE A L'UTILISATEUR EXISTE
-            if(is_dir("./uploads/users/user".$idUser)){
-                $defDir = "./uploads/users/user".$idUser."/".$pattern['patternPicture'];
-                copy($tempDir.$pattern['patternPicture'],$defDir);
-                unlink('./uploads/temp/'.$pattern['patternPicture']);
-            }else{
+            if (is_dir("./uploads/users/user" . $idUser)) {
+                $defDir = "./uploads/users/user" . $idUser . "/" . $pattern['patternPicture'];
+                copy($tempDir . $pattern['patternPicture'], $defDir);
+                unlink('./uploads/temp/' . $pattern['patternPicture']);
+            } else {
                 //CREE LE DOSSIER LIE A L'USER SI EXISTE PAS
-                mkdir("./uploads/users/user".$idUser);
-                $defDir = "./uploads/users/user".$idUser."/".$pattern['patternPicture'];
-                copy($tempDir.$pattern['patternPicture'],$defDir);
-                unlink('./uploads/temp/'.$pattern['patternPicture']);
+                mkdir("./uploads/users/user" . $idUser);
+                $defDir = "./uploads/users/user" . $idUser . "/" . $pattern['patternPicture'];
+                copy($tempDir . $pattern['patternPicture'], $defDir);
+                unlink('./uploads/temp/' . $pattern['patternPicture']);
             }
 
             // AJOUT PATRON DANS lA TABLE patron
@@ -69,7 +69,7 @@ if(!$included){
             $brand = $pattern['patternBrand'];
             $type = $pattern['patternType'];
             $link = $pattern['patternLink'];
-            $stmt->execute([$name,$desc,$defDir,$brand,$idUser,$type,$link]);
+            $stmt->execute([$name, $desc, $defDir, $brand, $idUser, $type, $link]);
 
 
             $idPatronInsert = $liaison->lastInsertId();
@@ -77,24 +77,24 @@ if(!$included){
             // DEPLACEMENT DU PDF 
             $nomsPDF = $pattern['patternPDF'];
             $nbPDF = count($nomsPDF);
-            for ($i=0; $i < $nbPDF; $i++) {
-                $defDir = "./uploads/users/user".$idUser."/".$nomsPDF[$i];
-                copy($tempDir.$nomsPDF[$i],$defDir);
-                unlink('./uploads/temp/'.$nomsPDF[$i]);
+            for ($i = 0; $i < $nbPDF; $i++) {
+                $defDir = "./uploads/users/user" . $idUser . "/" . $nomsPDF[$i];
+                copy($tempDir . $nomsPDF[$i], $defDir);
+                unlink('./uploads/temp/' . $nomsPDF[$i]);
                 //insertion du path du PDF dans la BDD
                 $stmt = $liaison->prepare('INSERT INTO pdf VALUES (NULL,?,?)');
-                $stmt->execute([$defDir,$idPatronInsert]);
+                $stmt->execute([$defDir, $idPatronInsert]);
             }
 
-            
+
             //Ajout des tags en BDD
             $tags = $pattern['patternTag'];
             $nbTags = count($tags);
-            for ($i=0; $i < $nbTags; $i++) { 
+            for ($i = 0; $i < $nbTags; $i++) {
                 $stmt = $liaison->prepare('INSERT INTO posséder VALUES(?,?)');
-                $stmt->execute([$idPatronInsert,$tags[$i]]);
+                $stmt->execute([$idPatronInsert, $tags[$i]]);
             }
-            
+
             $data['statut'] = '200';
             break;
 
@@ -106,7 +106,7 @@ if(!$included){
             $rows = $stmt->fetchAll();
             $listeId = [];
             foreach ($rows as $row) {
-                $listeId[]=$row['idPatron'];
+                $listeId[] = $row['idPatron'];
             }
             // echo json_encode($listeId);
 
@@ -125,7 +125,7 @@ if(!$included){
                 $rows = $stmt->fetch(PDO::FETCH_ASSOC);
                 $data[$idPatron] = $rows;
                 $data[$idPatron]['idPatron'] = $idPatron;
-                
+
                 //Récup les infos PDF
                 $stmt = $liaison->prepare('SELECT idPDF,relativePath
                 FROM pdf
@@ -158,14 +158,14 @@ if(!$included){
             $stmt = $liaison->prepare('DELETE FROM posséder WHERE idPatron =?;
             DELETE FROM pdf WHERE idPatron =?;
             DELETE FROM patron WHERE idPatron=?;');
-            $stmt->execute([$idPatron,$idPatron,$idPatron]);
+            $stmt->execute([$idPatron, $idPatron, $idPatron]);
 
             //2eme temps, suppression serveurs des PDF
-            $pdf = json_decode($_POST['pdfInfos'],true);
+            $pdf = json_decode($_POST['pdfInfos'], true);
             echo (count($pdf));
-            if(count($pdf) == 1){
+            if (count($pdf) == 1) {
                 unlink($pdf[0]['relativePath']);
-            }else{
+            } else {
                 $i = 0;
                 foreach ($pdf as $pdfInfos) {
                     $deletefile = $pdfInfos[$i]['relativePath'];
@@ -185,7 +185,7 @@ if(!$included){
             $idTypePatron = $_POST['idTypePatron'];
             $idTag = $_POST['idTag'];
             $idMarque = $_POST['idMarque'];
-            
+
             $params = [$idUser];
 
             $rqt = 'SELECT Pa.idPatron 
@@ -194,29 +194,29 @@ if(!$included){
             ON P.idPatron = Pa.idPatron
             WHERE idUtilisateur = ?';
 
-            if($idTypePatron != ''){
-                $rqt.= ' AND idTypePatron = ?';
+            if ($idTypePatron != '') {
+                $rqt .= ' AND idTypePatron = ?';
                 $params[] = $idTypePatron;
             }
-            
-            if ($idTag != ''){
-                $rqt.= ' AND idTag = ?';
-                $params[] = $idTag;
-            }   
 
-            if ($idMarque != ''){
+            if ($idTag != '') {
+                $rqt .= ' AND idTag = ?';
+                $params[] = $idTag;
+            }
+
+            if ($idMarque != '') {
                 $rqt .= ' AND idMarque = ?';
                 $params[] = $idMarque;
             }
             $stmt = $liaison->prepare($rqt);
-            
+
             // echo $rqt;
-            
+
             $stmt->execute($params);
             $rows = $stmt->fetchAll();
             $listeId = [];
             foreach ($rows as $row) {
-                $listeId[]=$row['idPatron'];
+                $listeId[] = $row['idPatron'];
             }
 
             //On va ensuite récup toutes les données propres à chaque patron et les mettres dans un tableau
@@ -234,7 +234,7 @@ if(!$included){
                 $rows = $stmt->fetch(PDO::FETCH_ASSOC);
                 $data[$idPatron] = $rows;
                 $data[$idPatron]['idPatron'] = $idPatron;
-                
+
                 //Récup les infos PDF
                 $stmt = $liaison->prepare('SELECT idPDF,relativePath
                 FROM pdf
@@ -257,7 +257,26 @@ if(!$included){
                 // $data[] = $unPatron;
             }
             break;
-        
+
+        case 'editPattern':
+            // echo json_decode($_POST[''],true);
+            //Partie Update du patron
+            $rqt = "UPDATE patron SET ";
+            $params = array();
+            foreach ($_POST as $key => $value) {
+                if ($key != 'pdfs' && $key != 'req' && $key != 'action' && $key != 'idPatron') {
+                    $rqt .= "$key = ?, ";
+                    $params[] = $value;
+                }
+            }
+            $rqt = substr($rqt, 0, -2);
+            $rqt .= "WHERE idPatron = ?"; 
+            $params[] = $_POST['idPatron'];
+            echo json_encode($rqt);
+            // $stmt = $liaison->prepare($rqt);
+            // $stmt->execute([$params]);
+            break;
+
         default:
             break;
     }
