@@ -13,7 +13,7 @@
           <router-link class="nav-link" to="/myspace" v-if="isLogged">Mon espace</router-link>
           <router-link class="nav-link" to="/login" v-else>Se connecter</router-link>
         </li>
-        <button class="nav  -item" @click="doLogOut()" v-if="isLogged">Déconnexion</button>
+        <button class="nav-item" @click="doLogOut()" v-if="isLogged">Déconnexion</button>
       </ul>
     </div>
   </nav>
