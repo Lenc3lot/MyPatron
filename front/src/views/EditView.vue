@@ -6,21 +6,21 @@
       <nav>
         <label for="patternTitle">
           <h3>Titre du patron : </h3>
-        </label><input id="patternTitle" type="text" placeholder="Titre" v-model="newPattern.patterName">
+        </label><input id="patternTitle" type="text" placeholder="Titre" v-model="pattern.pLibel" @change="formadata.append('pLibel',pattern.pLibel)">
       </nav>
       <!-- LIEN -->
       <nav>
         <label for="patternLink">
           <h3>Lien du patron : </h3>
-        </label><input id="patternLink" type="text" placeholder="Lien..." v-model="newPattern.patternLink">
+        </label><input id="patternLink" type="text" placeholder="Lien..." v-model="pattern.pLien" @change="formadata.append('pLien',pattern.pLien)">
       </nav>
       <!-- MARQUE -->
       <nav>
         <label for="patternBrand">
           <h3>Marque du patron : </h3>
         </label>
-        <select id="patternBrand" @change="newPattern.patternBrand = $event.target.value">
-          <option selected disabled>Super Bison</option>
+        <select id="patternBrand" @change="setNewBrand($event)">
+          <option selected disabled>{{pattern.libelMarque}}</option>
           <option v-for="marque in patternBrandList" :key="marque.idMarque" :id="marque.idMarque"
             :value="marque.idMarque">{{
         marque.libelMarque }}</option>
@@ -31,10 +31,10 @@
         <label for="patternType">
           <h3>Type du patron : </h3>
         </label>
-        <select id="patternType" @change="newPattern.patternType = $event.target.value">
-          <option selected disabled>Blouse</option>
-          <option v-for="typepatron in patternTypeList" :key="typepatron.idTypePatron" :id="typepatron.idTypePatron"
-            :value="typepatron.idTypePatron"> {{ typepatron.tpLibel }}
+        <select id="patternType" @change="setNewType($event)">
+          <option selected disabled>{{pattern.tpLibel}}</option>
+          <option v-for="typepatron in patternTypeList" :key="typepatron.idTypePatron" :id="typepatron.idTypePatron" :value="typepatron.idTypePatron"> 
+            {{ typepatron.tpLibel }}
           </option>
         </select>
       </nav>
@@ -43,31 +43,17 @@
         <label for="patternNotes">
           <h3>Notes : </h3>
         </label><textarea id="patternNotes" type="text" placeholder="Notes sur le patron..."
-          v-model="newPattern.patternDesc"></textarea>
+          v-model="pattern.pDesc" @change="formadata.append('pDesc',pattern.pDesc)"></textarea>
       </nav>
       <!--PDF-->
       <nav>
         <label>
           <h3>PDF :</h3>
-          <section>
-            <img src="../assets/pdf_file.png" width="50" />
-            <figcaption>notice_bardot.pdf</figcaption>
-            <button>Supprimer</button>
-          </section>
-          <section>
-            <img src="../assets/pdf_file.png" width="50" />
-            <figcaption>patron_bardotA0.pdf</figcaption>
-            <button>Supprimer</button>
-          </section>
-          <section>
-            <img src="../assets/pdf_file.png" width="50" />
-            <figcaption>patron_Projection_Bardot.pdf</figcaption>
-            <button>Supprimer</button>
-          </section>
+          <pdfItemEdit v-for="pdf in pattern.infoPdf" :key="pdf.idPDF" :pdf="pdf" />
         </label>
-        <pdfFormSubmit />
+        <pdfFormSubmit @addEdit="formadata.append('pdfs',JSON.stringify(dataStore.newPattern.patternPDF))"/>
       </nav>
-      <button style="padding: 1%;">Mettre à jour le patron</button>
+      <button style="padding: 1%;" @click="updatePattern()">Mettre à jour le patron</button>
     </div>
   </main>
 </template>
@@ -75,7 +61,7 @@
 <script>
 import store from '@/store'
 import pdfFormSubmit from '@/components/pdfFormSubmit.vue'
-
+import pdfItemEdit from '@/components/pdfItemEdit.vue'
 export default {
   name: 'editView',
   head() {
@@ -92,7 +78,8 @@ export default {
   },
   components: {
     // components here
-    pdfFormSubmit
+    pdfFormSubmit,
+    pdfItemEdit
   },
   props: {
     // props here
@@ -105,15 +92,85 @@ export default {
       // variables here
       dataStore: store,
       pattern: [],
-      newPattern: store.newPattern
+      newPattern: store.newPattern,
+      patternBrandList: [],
+      patternTypeList:[],
+      formadata: new FormData()
     }
   },
   methods: {
     // methods here
+    getPatternBrand() {
+            let datas = new FormData();
+            datas.append('req', 'pattern');
+            datas.append('action', 'getPatternBrand');
+            fetch(this.dataStore.baseUrl, {
+                body: datas,
+                method: 'POST'
+            })
+                .then(response => response.json())
+                .then(response => {
+                    this.patternBrandList = response
+                })
+                .catch(error => {
+                    console.log(error)
+                })
+        },
+        getPatternType() {
+            let datas = new FormData();
+            datas.append('req', 'pattern');
+            datas.append('action', 'getPatternType');
+            fetch(this.dataStore.baseUrl, {
+                body: datas,
+                method: 'POST'
+            })
+                .then(response => response.json())
+                .then(response => {
+                    this.patternTypeList = response
+                })
+                .catch(error => {
+                    console.log(error)
+                })
+        },
+        setNewBrand(e){
+          this.pattern.idMarque = e.target.value
+          this.formadata.append('idMarque',this.pattern.idMarque)
+        },
+        setNewType(e){
+          this.pattern.idTypePatron = e.target.value
+          this.formadata.append('idTypePatron',this.pattern.idTypePatron)
+        },
+        updatePattern(){
+          this.formadata.append('req','pattern')
+          this.formadata.append('action','editPattern')
+          this.formadata.append('idUser',localStorage.getItem('idUser'))
+          this.formadata.append('idPatron',this.pattern.idPatron)
+          console.log(this.formadata)
+          fetch(this.dataStore.baseUrl,{
+            body:this.formadata,
+            method:'POST'
+          })
+            .then(response=>response.json())
+            .then(response=> {
+              if(response['statut'] == '200'){
+                this.$swal({
+                  title: 'Patron modifié !',
+                  icon: 'success'
+                })
+                this.$router.push('/')
+              }
+            })
+            .catch(error=>{
+              console.error(error)
+            })
+        }
   },
   mounted() {
     // mounted here
     this.pattern = this.dataStore.patternInEdit
+    console.log(this.pattern)
+    this.getPatternBrand()
+    this.getPatternType()
   },
   created() {
     // created here
@@ -138,5 +195,9 @@ section {
 section>button {
   padding: 1%;
   margin-left: 2%;
+}
+
+input{
+  margin: 1%;
 }
 </style>

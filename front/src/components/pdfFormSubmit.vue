@@ -46,7 +46,8 @@ export default {
                             title:'Transfert réussi !',
                             icon: 'success'
                         })
-                        console.log(this.dataStore.newPattern.patternPDF)
+                        //Uniquement pour edit
+                        this.$emit('addEdit')
                     }
                 })
                 .catch(error=>{

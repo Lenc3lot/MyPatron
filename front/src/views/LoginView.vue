@@ -63,7 +63,6 @@ export default {
         })
             .then(response=>response.json())
             .then(response=>{
-                console.log(response)
                 if(response.statut == "200"){
                     localStorage.setItem('idUser',response.idUtilisateur)
                     localStorage.setItem('isLogged',true)
