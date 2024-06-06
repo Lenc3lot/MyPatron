@@ -1,6 +1,6 @@
 <template>
   <nav class="navbar navbar-expand-lg sticky-top navbar-dark bg-dark">
-    <span class="navbar-brand" style="flex-grow: 1; text-align: left;">MyPatronCollection</span>
+    <span class="navbar-brand" style="flex-grow: 1; text-align: left;">MyPatron</span>
     <div class="collapse navbar-collapse" id="navbarNav">
       <ul class="navbar-nav">
         <li class="nav-item active">

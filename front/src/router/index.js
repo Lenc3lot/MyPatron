@@ -34,6 +34,11 @@ const routes = [
     path:'/editPattern/:id',
     name:'editPattern',
     component: ()=> import('../views/EditView.vue')
+  },
+  {
+    path:'/myspace',
+    name:'myspace',
+    component: ()=> import('../views/MySpace.vue')
   }
 ]
 

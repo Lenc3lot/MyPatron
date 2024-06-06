@@ -14,9 +14,6 @@
             <h3>Tags : </h3>
             <p v-for="tag in tags" :key="tag.idTag">{{ tag.tLibel }}</p>
           </nav>
-          <!-- <embed 
-          src="https://noto.alwaysdata.net/back/uploads/users/user0/TagadaJones.pdf"
-          width="192O"> -->
         </section>
         <button @click="pdfAcces()">PDF</button>
         <button @click="editPattern()">Editer</button>
@@ -83,6 +80,7 @@ export default {
         .then(response=>response.json())
         .then(response=>{
           console.log(response)
+          this.$emit('actuPattern')
         })
         .catch(error=>{
           console.error(error)

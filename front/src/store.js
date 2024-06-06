@@ -1,5 +1,5 @@
 export default {
-    baseUrl: 'http://noto.alwaysdata.net/back/requestHandler.php',
+    baseUrl: 'https://noto.alwaysdata.net/back/requestHandler.php',
     data: {
         newPatternTitle: ''
     },

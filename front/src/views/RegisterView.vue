@@ -82,6 +82,12 @@ export default {
                             text: ' Compte déjà existant !',
                             icon: 'error'
                         })
+                    }else{
+                        this.$swal({
+                            title: 'Compte créé avec succès',
+                            icon: 'success'
+                        })
+                        this.$router.push('/login')
                     }
                 })
                 .catch(error=>{

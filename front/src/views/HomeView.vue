@@ -5,7 +5,12 @@
         <custonBar @resetSearch="resetSearch()" @setSpePatt="setListePatron($event)" :key="nbSide"/>
       </div>
     <div id="viewContainer">
-      <carteComponent v-for="patron in listeSelectedPatrons" :key="patron.idPatron" :patron="patron" @accesPDF="accesPDF($event)"/>
+      <carteComponent  v-for="patron in listeSelectedPatrons" :key="patron.idPatron" :patron="patron" @accesPDF="accesPDF($event)" @actuPattern="getAllPaterns()"/>
+      <section id="notLog" v-if="!isLogged">
+        <h1>Vous voulez rejoindre la communauté MyPatron ?</h1>
+        <h2>Alors n'attendez plus et inscrivez vous !</h2>
+        <button @click="$router.push('/login')">En cliquant ici !</button>
+      </section>
     </div>
     <div id="editMode" v-if="visible">
       <h1>Page édition</h1>
@@ -64,7 +69,8 @@ export default {
       listeSelectedPatrons: [],
       dataPDF: [],
       lienPDF: '',
-      nbSide: 0
+      nbSide: 0,
+      isLogged: false
     }
   },
   methods: {
@@ -115,7 +121,10 @@ export default {
   },
   mounted () {
     // mounted here
-    this.getAllPaterns()
+    if(localStorage.getItem('idUser')){
+      this.getAllPaterns()
+    }
+    this.isLogged = localStorage.getItem('isLogged')
   },
   created () {
     // created here
@@ -202,5 +211,9 @@ embed{
 
 #btnFermer{
   height: 5%;
+}
+
+#notLog{
+  text-align: center;
 }
 </style>

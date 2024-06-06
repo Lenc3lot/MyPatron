@@ -24,7 +24,7 @@
       </nav>
       <p v-if="displayReset" @click="resetSearch()">Annuler le tri</p>
 		</ul>
-    <button @click="selectSpePattern()">GO</button>
+    <button @click="selectSpePattern()" v-if="isLogged">GO</button>
 	</header>
 </template>
 
@@ -63,7 +63,8 @@ export default {
       selectedTag: '',
       selectedType: '',
       selectedBrand: '',
-      displayReset: false
+      displayReset: false,
+      isLogged: false
     }
   },
   methods: {
@@ -149,6 +150,7 @@ export default {
     this.getTags()
     this.getType()
     this.getPatternBrands()
+    this.isLogged = localStorage.getItem('isLogged')
   },
   created () {
     // created here
