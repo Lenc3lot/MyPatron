@@ -71,7 +71,6 @@ if (!$included) {
             $link = $pattern['patternLink'];
             $stmt->execute([$name, $desc, $defDir, $brand, $idUser, $type, $link]);
 
-
             $idPatronInsert = $liaison->lastInsertId();
 
             // DEPLACEMENT DU PDF 
@@ -264,17 +263,32 @@ if (!$included) {
             $rqt = "UPDATE patron SET ";
             $params = array();
             foreach ($_POST as $key => $value) {
-                if ($key != 'pdfs' && $key != 'req' && $key != 'action' && $key != 'idPatron') {
+                if ($key != 'pdfs' && $key != 'req' && $key != 'action' && $key != 'idPatron' && $key != 'idUser') {
                     $rqt .= "$key = ?, ";
                     $params[] = $value;
                 }
             }
             $rqt = substr($rqt, 0, -2);
-            $rqt .= "WHERE idPatron = ?"; 
+            $rqt .= " WHERE idPatron = ?"; 
             $params[] = $_POST['idPatron'];
-            echo json_encode($rqt);
-            // $stmt = $liaison->prepare($rqt);
-            // $stmt->execute([$params]);
+            $stmt = $liaison->prepare($rqt);
+            $stmt->execute($params);
+            $idUser = $_POST['idUser'];
+
+            if(isset($_POST['pdfs'])){
+                $nomsPDF = json_decode($_POST['pdfs'],true);
+                $nbPDF = count($nomsPDF);
+                $tempDir = "./uploads/temp/";
+                for ($i = 0; $i < $nbPDF; $i++) {
+                    $defDir = "./uploads/users/user" . $idUser . "/" . $nomsPDF[$i];
+                    copy($tempDir . $nomsPDF[$i], $defDir);
+                    unlink('./uploads/temp/' . $nomsPDF[$i]);
+                    //insertion du path du PDF dans la BDD
+                    $stmt = $liaison->prepare('INSERT INTO pdf VALUES (NULL,?,?)');
+                    $stmt->execute([$defDir, $_POST['idPatron']]);
+                }
+            }
+            $data['statut'] = '200';
             break;
 
         default:
