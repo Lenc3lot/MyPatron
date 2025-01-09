@@ -6,7 +6,7 @@
           <input type="text" placeholder="Login" v-model="loginData.login">
           <input type="password" placeholder="Password" v-model="loginData.pwd">
           <figcaption>Pas d'identifiants ? Cliquez <router-link to="/register">ici</router-link> pour créer un compte !</figcaption>
-          <input type="submit" class="button-29" value="Se connecter" @click="doLogin()">
+          <input type="submit" class="button-29" value="Se connecter" @click="doLogin()" >
         </nav>
       </div>
       <!-- <button @click="test()">Clic</button> -->
@@ -92,6 +92,11 @@ export default {
   },
   created () {
     // created here
+      window.addEventListener('keydown', (e) => {
+        if(e.key == "Enter"){
+          this.doLogin();
+        }
+      });
   }
 }
 </script>
